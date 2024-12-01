@@ -1,0 +1,155 @@
+Florida Cities Population Query
+Name: Sierra Smith  
+Date Created: 11/30/2024
+
+Program Description: 
+This program simulates a Florida city populations database that has options for viewing the population growth of 10 hand-picked cities. After querying the database for a city, all of its population data is gathered and illustrated on a graph for the user to see. The user can view all the cities as many times as they want until they are finished.
+
+Functions used in the Program (list in order as they are called):
+
+1. Function Name: main
+     Description: First function to iterate in the program.
+     Parameters: None  
+     Variables: None
+     Logical Steps: 
+	1. Calls the create_table function.
+     Returns: None
+
+2. Function Name: create_table 
+     Description: Creates a table named "population" inside a database(population_SS.db) using the sqlite3 module
+     Parameters: None
+     Variables:
+	1. conn(SQLite object) - Used to connect to a database file.
+	2. cursor(SQLite object) - Used to interact with the database.
+	3. table(string) - SQLite instructions for creating a new table with specified columns.
+     Logical Steps: 
+	1. Define 'conn' as a connection to the file 'population_SS.db'
+	2. Define 'cursor' object using 'conn': cursor = conn.cursor()
+	3. Make a statement to drop any table named 'population' if it exists.
+	4. Define 'table' as creating a new table in the .db file named 'population' that has columns named 'city', 	'year', and 'population'
+	5. Execute the previous statement using the 'cursor' object.
+	6. Call the next function 'collect_data(conn, cursor)'
+     Returns: None
+
+3. Function Name: collect_data
+     Description: Collects population growth data for 10 Florida cities, simulates 2% population growth every year 	for 20 years and stores the results into the 'population' table.
+     Parameters: 
+	1. conn(SQLite object) - Used to connect to 'population_SS.db'
+	2. cursor(SQLite object) - Used to interact with the .db file.
+     Variables:
+	1. population_data(list) - List of tuples defining rows of data for the 'population' table.
+	2. flat_population_data(list) - Flat list of all data in 'population_data'
+	3. cities(list) - Reformatted version of 'flat_population_data' that contains nested lists for each city.
+	4. one_city(string) - The name of one city from the 'cities' list.
+	5. one_year(integer) - A number representing what year the population data was recorded.
+	6. one_population(integer) - The city's population after growing 2%.
+     Logical Steps:
+	1. Collect population data about 10 Florida cities.
+	2. Create a list of tuples containing the city name, year the population was recorded, and population of 	each city. Name the list 'population_data'
+	3. Define a list named 'flat_population_data' that uses list comprehension to append every item from 	'population_data' to it. (Essentially copies the list of tuples to a new list)
+	4. Define a list named 'cities' that uses list comprehension to create nested lists of every 3 items from 	'flat_population_data'
+	5. Define a 'for' loop that iterates 20 times, representing the passing of 20 years. (for count in 	range(20)).
+		6. Define a 'for' loop inside the previous that records the growth of one city "per year;"
+		(iterates through each nested list in 'cities'): for city in cities:
+		7. Define one_city as index 0 of the current nested list.
+		8. Define one_year as index 1 of the current nested list, plus one and plus count.
+		9. Multiply the value of index 2 and 0.02, add it to the initial value of index 2. Redefine the 		value of index 2 as the result.
+		10. Define 'one_population' as the nested list's value index 2.
+		11. Append 'one_city,' 'one_year,' and 'one_population' as a new nested tuple to 'population_data'
+	12. Now that 'population_data' is filled with data of cities ranging from years 2023-2043, use the cursor 	object to insert all the tuples into the 'population' table.
+	13. Commit the new changes and close the connection to the database.
+	14. Call the next function cities_inquiry()
+
+4. Function Name: cities_inquiry
+     Description: User-choice function that gives options for displaying city population growth
+     Parameters: None
+     Variables:
+	1. options_list(list) - List of options (cities) for the user to choose from.
+	2. DIV(string) - String divider used to add neatness to the code.
+     Logical Steps: 
+	1. Print a welcome message.
+	2. Define 'options_list' as including names of every city from the 'population' table.
+	3. Call display_options(options_list).
+	4. Call choose_option(options_list).
+	5. Create a 'while' loop that iterates based on user input.
+		6. Call display_city_growth()
+		7. Call choose_option(options_list)
+	8. The 'else' statement of the 'while' loop exits the program once the user indicates that they want to 	exit.       
+     Returns: None
+
+5. Function Name: display_options 
+     Description: Helper function that iterates through and displays every item in options_list (one-time use).
+     Parameters: 
+	1. options_list(list) - List of options (cities) for the user to choose from.
+     Variables:
+	1. count(integer) - An accumulator for a 'for' loop.
+     Logical Steps: 
+	1. Define 'count' as 0.
+	2. Define a 'for' loop that iterates through options_list. (For city in options_list)
+	3. Use 'count' to number and index each option from 'options_list'
+	4. Add one to 'count'
+     Returns: None
+
+6. Function Name: choose_option
+     Description: Creates a table named "population" inside a database(population_SS.db) using the sqlite3 module
+     Parameters:
+	1. options_list(list) - List of options (cities) for the user to choose from.
+     Variables:
+	1. choice(global integer) - User input of which city population growth they want to view.
+     Logical Steps: 
+	1. Declare 'choice' as a global variable.
+	2. Prompt user to enter the number of which city's population growth they want to view.
+	2. Define 'choice' as the user input converted into an integer.
+	3. Minus one from 'choice' to use it as an index for 'options_list'
+	5. Reassign 'choice' to the indexed value in 'options_list'
+     Returns: None
+
+7. Function Name: display_city_growth
+     Description: Takes a query and makes a graph from the data stored in the population table.
+     Parameters: None
+     Variables:
+	1. conn(SQLite object) - Used to connect to 'population_SS.db'
+	2. cursor(SQLite object) - Used to interact with 'population_SS.db'
+	3. results(string) - Results from fetching all data of a table query.
+	4. a(list) - Where all populations for a specific city are stored.
+	5. population(integer) - Population of a single row from 'results'
+	6. years(ndarray) - Used for x-axis of population growth, indicates the starting and ending years 	(2023-2043) of documentation.
+	7. min_pop(string) - The lowest population in 'a' list.
+	8. max_pop(string) - The highest population in 'a' list.
+	9. x_ticks(ndarray) - An array spanning from 2023 to 2044(not included) to specify ticks for an x-axis.
+	10. fig, ax(object) - Defined for using methods from plt.subplots.
+     Logical Steps: 
+	1. Establish a connection with 'population_SS.db'
+	2. Create a cursor object to interact with the .db file.
+	3. Select all data in the 'population' table according to which city the user chose to view. Pass the 	user's choice in as a parameter. (select * from population where city = ?, (choice))
+	4. Fetch all the data from the selection and save it to 'results'
+	5. Define an empty list named 'a' where all population numbers for the specific city will be stored.
+	6. Define a 'for' loop that appends all population numbers from 'results' to 'a' (for row in results:)
+		7. Take the index 2 of the current 'row' in 'results' and assign it to 'population'
+		8. Append 'population' to 'a'
+	9. Define 'years' array: years = np.linspace(2023, 2043, num=21)
+	10. Define 'min_pop' as the minimum value found in 'a' list and format it with thousands-place commas.
+	11. Define 'max_pop' as the maximum value found in 'a' list and format it with thousands-place commas.
+	12. Define 'x_ticks_ array: x_ticks = np.arange(2023, 2044, 5)
+	13. Use the rc method from the matplotlib module to format the graph's font family.
+	14. Define fig, ax to use plt.subplots(). (fig, ax = plt.subplots()).
+	15. Use 'ax' methods to add visual details such as a grid and x and y labels to the graph.
+	16. Use 'plt' methods to add visual details such as x-axis ticks, a line, specific coordinates, and the 	title to the graph.
+	17. Add text near the first and last coordinates to emphasize the beginning and final populations.
+	18. Display the graph using plt.show()
+	19. Commit any changes to the database and close its connection.
+     Returns: None
+
+
+Logical Steps:
+	1. Call the main() function.
+	2. Call the create_table() function within the main() function.
+	3. Call the collect_data(conn, cursor) function within the create_table() function.
+	4. Call the cities_inquiry() function within the collect_data(conn, cursor) function.
+	5. Call the display_options(options_list) function within the cities_inquiry() function.
+	6. Call the choose_option(options_list) function within the cities_inquiry() function.
+	7. While the user's choice is to view a city, call display_city_growth and then choose_option(options_list) 	within the cities_inquiry() function.
+	8. When the user wants to exit, call the exit() function within the cities_inquiry() function.
+
+
+Link to your repository: https://github.com/Cyb3rS1/FL-Cities-Query
